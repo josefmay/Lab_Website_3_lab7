@@ -89,12 +89,16 @@ app.get('/', function(req, res) {
 });
 
 app.get('/team_stats', function(req, res) {
+    var games = "select * from football_games;"
+    var wins = "select count(*) from football_games where home_score > visitor_score;"
+    var losses = "select count(*) from football_games where home_score < visitor_score;"
 	res.render('pages/team_stats',{
 		my_title:'Team Stats'
 	});
 });
 
 app.get('/player_info', function(req, res) {
+    var idName = "select id,name from football_players";
 	res.render('pages/player_info',{
 		my_title:'Player Info'
 	});
