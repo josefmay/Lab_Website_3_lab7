@@ -92,9 +92,21 @@ app.get('/team_stats', function(req, res) {
     var games = "select * from football_games;"
     var wins = "select count(*) from football_games where home_score > visitor_score;"
     var losses = "select count(*) from football_games where home_score < visitor_score;"
-	res.render('pages/team_stats',{
-		my_title:'Team Stats'
-	});
+    db.task('get-everything', task => {
+        return task.batch([
+            task.any(games),
+            task.any(wins),
+            task.any(losses)
+        ]);
+    })
+    .then(info => {
+        res.render('pages/team_stats',{
+    		my_title:'Team Stats',
+            wins: info[1][0].count,
+            losses: info[2][0].count,
+            games: info[0]
+    	})
+    })
 });
 
 app.get('/player_info', function(req, res) {
